@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pesto Player - Flash your SD card from a Chromebook</title>
+<meta name="description" content="Download the Pesto Player OS image and flash it to an SD card with Chromebook Recovery Utility. No terminal, no Raspberry Pi Imager.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f7d4f'/%3E%3Cpath d='M12 9v14l11-7z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Pesto Player</p>
+    <h1>Flash your SD card from a Chromebook</h1>
+    <p class="lead">Download the Pesto Player OS image, then write it to an SD card with Chromebook Recovery Utility. No terminal and no Raspberry Pi Imager.</p>
+    <p class="honest"><strong>Heads up:</strong> a web page is not allowed to write to an SD card (browsers block that). This page downloads the image and walks you through the flash. The actual writing is done by Chromebook Recovery Utility.</p>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+  <section class="card" id="download" aria-labelledby="dl-h">
+    <h2 id="dl-h">1. Get the image</h2>
+    <div id="release" aria-live="polite">
+      <p class="muted">Checking for the latest release...</p>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="steps-h">
+    <h2 id="steps-h">2. Flash it</h2>
+    <p class="muted">You need an SD card of <strong>16 GB or more</strong> (a name-brand card is worth it) and a USB or built-in SD reader. Everything on the card will be erased.</p>
+    <ol class="steps">
+      <li>
+        <strong>Install Chromebook Recovery Utility</strong> (free, from Google).
+        <div><a class="btn secondary" href="https://chromewebstore.google.com/detail/chromebook-recovery-utili/pocpnlppkickgojjlmhdmidojbmbodfm" target="_blank" rel="noopener">Open in Chrome Web Store</a></div>
+      </li>
+      <li><strong>Download the image</strong> above. Leave it as the <code>.img.zip</code> file. Do not unzip it.</li>
+      <li><strong>Insert the SD card</strong> into your Chromebook.</li>
+      <li><strong>Open Chromebook Recovery Utility</strong> from the launcher and click <em>Get started</em>.</li>
+      <li>Click the <strong>gear icon</strong> in the top-right corner, then choose <strong>Use local image</strong>.</li>
+      <li>Pick the <code>pesto-os-...img.zip</code> file you downloaded (it is in your Downloads folder).</li>
+      <li>Choose your <strong>SD card</strong> from the drop-down. Check the size so you do not pick the wrong drive.</li>
+      <li>Click <strong>Continue</strong>, then <strong>Create now</strong>. Wait for it to write and verify; it can take 10 minutes or more. Do not remove the card until it says it is done.</li>
+      <li><strong>Optional but recommended:</strong> add your Wi-Fi (step 3 below) before putting the card in the Pi.</li>
+      <li>Put the card in the Pi, plug in power, and wait. See <a href="#boot">what to expect</a>.</li>
+    </ol>
+  </section>
+
+  <section class="card" id="wifi" aria-labelledby="wifi-h">
+    <h2 id="wifi-h">3. Wi-Fi helper (optional)</h2>
+    <p>Fill this in to make a <code>pesto-wifi.txt</code> file. After flashing, open the card in your Files app (the drive called <strong>bootfs</strong> / <strong>boot</strong>) and copy the file onto it. The Pi reads it on boot and joins your network.</p>
+    <p class="privacy"><strong>Private:</strong> this form works entirely in your browser. Your network name and password are never sent anywhere; the file is created on your device.</p>
+    <form id="wifi-form" autocomplete="off" novalidate>
+      <div class="field">
+        <label for="ssid">Wi-Fi name (SSID)</label>
+        <input id="ssid" name="ssid" type="text" required maxlength="32" autocapitalize="off" spellcheck="false" aria-describedby="ssid-err">
+        <p class="err" id="ssid-err" role="alert"></p>
+      </div>
+      <div class="field">
+        <label for="psk">Wi-Fi password</label>
+        <div class="pw">
+          <input id="psk" name="psk" type="password" maxlength="63" autocapitalize="off" spellcheck="false" aria-describedby="psk-hint psk-err">
+          <button type="button" class="btn secondary small" id="toggle-pw" aria-pressed="false">Show</button>
+        </div>
+        <p class="hint" id="psk-hint">8 to 63 characters. Leave empty only for an open network.</p>
+        <p class="err" id="psk-err" role="alert"></p>
+      </div>
+      <button type="submit" class="btn">Download pesto-wifi.txt</button>
+      <p class="muted small" id="wifi-status" role="status"></p>
+    </form>
+    <p class="muted small">The Pi supports 2.4 GHz networks (the Zero 2 W has no 5 GHz radio).</p>
+  </section>
+
+  <section class="card" id="boot" aria-labelledby="boot-h">
+    <h2 id="boot-h">4. First boot</h2>
+    <ul>
+      <li>The first boot takes <strong>a few minutes</strong>. It sets itself up and may restart once. Be patient and keep power connected.</li>
+      <li>The screen will come up with Pesto Player when it is done.</li>
+      <li>The default hostname is <code>pesto</code>, so on your network it is reachable as <code>pesto.local</code>.</li>
+      <li>Add music from the player: Library, then Add music, then scan the QR code with your phone.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="help" aria-labelledby="help-h">
+    <h2 id="help-h">Troubleshooting</h2>
+    <details>
+      <summary>My SD card is not listed in Recovery Utility</summary>
+      <p>Remove and re-insert the card, then close and reopen the app. Make sure the card is at least 16 GB and the reader is fully seated. Try a different reader or USB port. Some very new or very large cards (above 128 GB) can be fussy; a 16 to 64 GB card is the safe choice.</p>
+    </details>
+    <details>
+      <summary>Recovery Utility shows an error</summary>
+      <p>Re-download the image and check the SHA256 matches (step 1). Pick the <code>.img.zip</code> as-is; do not unzip it. Make sure you have enough free space in Downloads and that the download finished. If it fails partway, try another card, since a worn or fake card is the usual cause.</p>
+    </details>
+    <details>
+      <summary>The Pi does not connect to Wi-Fi</summary>
+      <p>Check that <code>pesto-wifi.txt</code> is in the top level of the boot drive (not in a folder) and that the name and password are exact, with correct capitals. The network must be 2.4 GHz. You can also connect a keyboard and fix it from the player's settings.</p>
+    </details>
+    <details>
+      <summary>The screen stays black after several minutes</summary>
+      <p>Wait up to 5 minutes on the very first boot. Check the power supply (a weak charger causes odd behaviour), that the display is seated on the GPIO header, and re-flash the card if it still does not start.</p>
+    </details>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>This page does not collect any data.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
